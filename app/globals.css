@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter-src), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-src), var(--font-inter-src), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-mono-src), ui-monospace, "SF Mono", monospace;
+
+  --color-void: #050507;
+  --color-graphite: #101013;
+  --color-graphite-2: #17171b;
+  --color-edge: #232329;
+  --color-soft: #f4f4f1;
+  --color-dim: #8a8a91;
+  --color-dimmer: #55555c;
+  --color-green: #3ddc84;
+  --color-violet: #8b7cff;
+  --color-cyan: #5cd6ec;
+
+  --animate-eq1: eq 0.9s ease-in-out infinite;
+  --animate-eq2: eq 0.7s ease-in-out 0.15s infinite;
+  --animate-eq3: eq 1.1s ease-in-out 0.05s infinite;
+  --animate-blink: blink 1.1s steps(2, start) infinite;
+  --animate-scan: scan 2.8s linear infinite;
+
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(400%); }
+  }
+}
+
+/* Plain keyframes — used directly from inline styles, so they must live
+   outside @theme (Tailwind only emits theme keyframes that a token uses). */
+@keyframes sheen {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+@keyframes layerIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  scroll-behavior: initial;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-soft);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: rgba(139, 124, 255, 0.28);
+  color: #fff;
+}
+
+/* ---------- editorial primitives ---------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.tech-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-dimmer);
+}
+
+/* ---------- film grain + vignette ---------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* ---------- giant ghost numbers behind sections ---------- */
+
+.ghost-number {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 244, 241, 0.1);
+  user-select: none;
+}
+
+/* ---------- device screen helpers ---------- */
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56%;
+  height: 56%;
+}
+
+/* ---------- hairlines ---------- */
+
+.hairline {
+  border-color: rgba(244, 244, 241, 0.09);
+}
+
+/* ---------- scrollbar (subtle, dark) ---------- */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #050507;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c1c21;
+  border-radius: 5px;
+  border: 2px solid #050507;
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .grain,
+  .vignette {
+    display: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* The phone is deliberately large on desktop, where the copy can share the
+   frame with it. On narrow screens it needs its own visual lane so headings
+   and commands remain readable instead of sitting on top of the device. */
+@media (max-width: 767px) {
+  .stage-phone {
+    transform: translateY(-23vh) scale(0.68);
+    transform-origin: center center;
+  }
+
+  .stage-phase-layer h1,
+  .stage-phase-layer h2 {
+    text-wrap: balance;
+  }
+
+  .stage-phase-layer .tech-label {
+    max-width: calc(100vw - 2rem);
+    text-align: center;
+    line-height: 1.5;
+  }
+}
